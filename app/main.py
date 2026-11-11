@@ -5,10 +5,13 @@ from random import randrange
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
+from . import models
+from .database import engine, Session, get_db
 
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-@app.get("/")
+
 
 #Building the schema for post
 class Post(BaseModel):
@@ -44,6 +47,10 @@ def find_index_post(id):
 async def root():
     return {"message": "Hello World"}
 
+@app.get("/sqlalchemy")
+def test_posts(db: Session = Depends(get_db)):
+    return {"stat"}
+
 @app.get("/posts")
 async def get_post():
     cursor.execute("""SELECT * FROM posts""")
@@ -72,21 +79,24 @@ def get_post(id: int, response: Response):
 @app.delete("/posts/{id}", status_code = status.HTTP_204_NO_CONTENT)
 async def delete_post(id: int):
     #deleting a post
-    index = find_index_post(id)
-    if index == None:
+    cursor.execute(""" DELETE FROM posts WHERE id = %s returning * """, (str(id)))
+    delete_post = cursor.fetchone()
+    conn.commit()
+
+    if delete_post == None:
         raise HTTPException(status_code = status.HTTP_404_NOT_FOUND,
                             detail = f"post with id {id} not found")
-    my_posts.pop(index)
     return Response(status_code = status.HTTP_204_NO_CONTENT)
 
 @app.put("/posts/{id}")
 def update_post(id: int, post: Post):
-    index = find_index_post(id)
-    if index == None:
+    cursor.execute(""" UPDATE posts SET title = %s, content = %s, published = %s WHERE id = %s RETURNING * """, (post.title, post.content, post.published, str(id)))
+    updated_post = cursor.fetchone()
+    conn.commit()
+
+    if updated_post == None:
         raise HTTPException(status_code = status.HTTP_404_NOT_FOUND,
                             detail = f"post with id {id} not found")
-    post_dict = post.dict()
-    post_dict['id'] = id
-    my_posts[index] = post_dict
-    return {"data": post_dict}
+    
+    return {"data": updated_post}
 
