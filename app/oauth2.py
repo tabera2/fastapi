@@ -5,14 +5,15 @@ import jwt
 from . import schemas, database, models
 from fastapi import Depends, status, HTTPException
 from sqlalchemy.orm import Session
+from .config import settings
 
 #SECRET_KEY
 #Algorithm
 #Expiration time
 
-SECRET_KEY = "9d52feaee670bbb2a0da5e1e75e9091d11a05bebc1056910e36130cfa086c8db"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+SECRET_KEY = settings.secret_key
+ALGORITHM = settings.algorithm
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 
