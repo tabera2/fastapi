@@ -1,6 +1,8 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional
+from typing import Literal
+
 
 
 #Building the schema for post
@@ -51,4 +53,7 @@ class Token(BaseModel):
 class Token_Data(BaseModel):
     id: Optional[str] = None
 
+class Vote(BaseModel):
+    post_id: int
+    dir: Literal[0, 1]
 
