@@ -2,6 +2,10 @@
 
 A learning project built while following the freeCodeCamp FastAPI course. It provides a REST API for user registration, authentication, posts, and votes, backed by PostgreSQL.
 
+## Live demo
+
+Explore the [live API](https://fastapi-tsiyona.onrender.com) and its [interactive documentation](https://fastapi-tsiyona.onrender.com/docs).
+
 ## Tech stack
 
 Python, FastAPI, SQLAlchemy, PostgreSQL, Alembic, and Docker.
