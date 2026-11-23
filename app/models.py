@@ -26,3 +26,14 @@ class Vote(Base):
     __tablename__ = "votes"
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
     post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"), primary_key=True)
+
+class Deal(Base):
+    __tablename__ = "deals"
+    id = Column(Integer, primary_key=True)
+    owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    brand = Column(String(200), nullable=False)
+    creator = Column(String(200), nullable=False)
+    deliverables = Column(String(2000), nullable=False)
+    amount_cents = Column(Integer, nullable=False)
+    stage = Column(String(30), nullable=False, server_default="pitch")
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
